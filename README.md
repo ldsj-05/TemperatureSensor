@@ -1,3 +1,3 @@
 # TemperatureSensor
-EK131 Project 
+EK131 Project: Attached below is a report of my Temperature Sensor 
 [Final+Report+.pdf](https://github.com/user-attachments/files/17061475/Final%2BReport%2B.pdf)
