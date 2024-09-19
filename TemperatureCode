@@ -1,0 +1,50 @@
+#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+int sensorPin = A0;
+int LEDPin = 3;
+int Buzzer = 5;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(Buzzer, OUTPUT);
+  pinMode(LEDPin, OUTPUT);
+  lcd.init();
+  lcd.backlight();
+}
+
+void loop() {
+  int reading = analogRead(sensorPin);
+  float voltage = reading * (5.0 / 1024); // Convert reading to voltage
+  float temperatureC = (2.100 - voltage) * 92.0; // Calculate temperature in Celsius
+  float temperatureF = (temperatureC * 9.0 / 5.0) + 32.0; // Convert temperature to Fahrenheit if needed
+  delay(1000);
+
+  lcd.clear();
+  lcd.setCursor(1, 0);
+  Serial.print(temperatureF); Serial.println(" degrees F");
+  lcd.print("Temperature = ");
+  lcd.setCursor(1, 1);
+  lcd.print(temperatureF);
+
+  if (temperatureF < 85 && temperatureF > 75 || temperatureF < 50) {
+    digitalWrite(LEDPin, HIGH);
+    playTwinkle();
+  } else {
+    digitalWrite(LEDPin, LOW); // Turn off the LED if temperature is outside the desired range
+  }
+}
+
+void playTwinkle() {
+  int notes[] = {262, 262, 392, 392, 440, 440, 392, 349, 349, 330, 330, 294, 294, 262};
+  int durations[] = {200, 200, 200, 200, 200, 200, 400, 200, 200, 200, 200, 200, 200, 400};
+
+  for (int i = 0; i < 14; ++i) {
+    tone(Buzzer, notes[i]);
+    delay(durations[i]);
+    noTone(Buzzer);
+    delay(50);
+  }
+}
